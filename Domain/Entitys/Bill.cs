@@ -7,13 +7,11 @@ namespace Domain.Entitys
     {
         private readonly List<BillChanges> _changes;
 
-        public Transaction? ExecutionContext {  get; }
-
         public Client BillOwner { get; private set; }
 
         public Result Debet(decimal amount) //increment
         {
-            var changeValidate = BillChanges.Create(Guid.NewGuid(), DateTime.Now, amount);
+            var changeValidate = BillChanges.Create(Guid.NewGuid(), this, DateTime.Now, amount);
 
             if (changeValidate.IsFailure)
             {
@@ -24,6 +22,21 @@ namespace Domain.Entitys
 
             return Result.Success();
         }
+
+        public Result Debet(decimal amount, Transaction executionContext) //increment
+        {
+            var changeValidate = BillChanges.Create(Guid.NewGuid(), this, DateTime.Now, amount, executionContext);
+
+            if (changeValidate.IsFailure)
+            {
+                return changeValidate;
+            }
+
+            _changes.Add(changeValidate.Value);
+
+            return Result.Success();
+        }
+
         public Result Credit(decimal amount) //decrement
         {
             if (GetAmountAtDate(DateTime.Now.AddMinutes(10)) - amount < 0)
@@ -31,7 +44,25 @@ namespace Domain.Entitys
                 return Result.Failure("can not credit not positive bill");
             }
 
-            var changeValidate = BillChanges.Create(Guid.NewGuid(), DateTime.Now, -amount);
+            var changeValidate = BillChanges.Create(Guid.NewGuid(), this, DateTime.Now, -amount);
+
+            if (changeValidate.IsFailure)
+            {
+                return changeValidate;
+            }
+
+            _changes.Add(changeValidate.Value);
+
+            return Result.Success();
+        }
+        public Result Credit(decimal amount, Transaction executionContext) //decrement
+        {
+            if (GetAmountAtDate(DateTime.Now.AddMinutes(10)) - amount < 0)
+            {
+                return Result.Failure("can not credit not positive bill");
+            }
+
+            var changeValidate = BillChanges.Create(Guid.NewGuid(), this, DateTime.Now, -amount, executionContext);
 
             if (changeValidate.IsFailure)
             {

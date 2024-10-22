@@ -10,19 +10,56 @@ namespace Domain.Operation
 {
     public class Transaction : Entity<Guid>
     {
-        private readonly List<BillChanges> _changes;
+        private List<BillChanges> _changes;
 
+        public bool IsExecuted { get; }
         public Bill From { get; }
         public Bill To { get; }
+        public decimal Amount { get; init; }
 
-        private Transaction(List<BillChanges> actions)
+        private Transaction(Guid id, bool isExecuted, Bill initId, Bill destinationId, decimal amount)
         {
-            _changes = actions;
+            Id = id;
+            IsExecuted = isExecuted;
+            From = initId;
+            To = destinationId;
+            Amount = amount;
         }
 
-        public static Result<Transaction> Create()
+        public Result Execute()
         {
-            throw new NotImplementedException();
+            if (IsExecuted)
+            {
+                return Result.Failure("Transaction already executed");
+            }
+
+            if (From.GetAmountAtDate(DateTime.Now) < Amount)
+            {
+                return Result.Failure("dont have amount in init bill");
+            }
+
+            var creditResult = From.Credit(Amount, this);
+
+            if (creditResult.IsFailure)
+            {
+                return creditResult;
+            }
+
+            var debetResult = To.Debet(Amount, this);
+
+            if (debetResult.IsFailure)
+            {
+                From.Debet(Amount);
+                return debetResult;
+            }
+
+            return Result.Success();
+        }
+
+        public static Result<Transaction> Create(Guid id, bool isExecuted, Bill from, Bill to, decimal amount)
+        {
+
+            return Result.Success(new Transaction(id, isExecuted, from, to, amount));
         }
 
     }

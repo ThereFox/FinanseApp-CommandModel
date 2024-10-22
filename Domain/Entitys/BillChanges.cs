@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Domain.Operation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +10,40 @@ namespace Domain.Entitys
 {
     public class BillChanges : Entity<Guid>
     {
-        public decimal Change { get; set; }
-        public DateTime AppeandDate { get; set; }
+        public Transaction? ExecutedInContext { get; init; }
+        public Bill ChangedBill { get; init; }
 
-        private BillChanges(Guid id, decimal change, DateTime createDate)
+        public decimal Change { get; init; }
+        public DateTime AppeandDate { get; init; }
+
+        private BillChanges(Guid id, Bill bill, decimal change, DateTime createDate)
         {
             Id = id;
+            ChangedBill = bill;
             Change = change;
             AppeandDate = createDate;
         }
-
-        public static Result<BillChanges> Create(Guid id, DateTime createDate, decimal change)
+        private BillChanges(Guid id, Bill bill, decimal change, DateTime createDate, Transaction executionContext)
         {
-            return Result.Success(new BillChanges(id, change, createDate));
+            Id = id;
+            ChangedBill = bill;
+            Change = change;
+            AppeandDate = createDate;
+            ExecutedInContext = executionContext;
+        }
+
+        public static Result<BillChanges> Create(Guid id, Bill bill, DateTime createDate, decimal change)
+        {
+            return Result.Success(new BillChanges(id, bill, change, createDate));
+        }
+        public static Result<BillChanges> Create(Guid id, Bill bill, DateTime createDate, decimal change, Transaction transaction)
+        {
+            if(transaction.From != bill && transaction.To != bill)
+            {
+                return Result.Failure<BillChanges>("Transaction not contain this bill");
+            }
+
+            return Result.Success(new BillChanges(id, bill, change, createDate, transaction));
         }
     }
 }
