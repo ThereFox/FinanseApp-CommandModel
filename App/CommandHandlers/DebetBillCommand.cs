@@ -1,4 +1,5 @@
 ﻿using App.Commands;
+using CSharpFunctionalExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,7 @@ namespace App.CommandHandlers
 {
     public class ChangeBillCommandHandler : ICommandHandler<CreditBillCommand>
     {
-
-
-
-        public void Handl(CreditBillCommand command)
+        public Task<Result> HandlAsync(CreditBillCommand command)
         {
             throw new NotImplementedException();
         }
