@@ -1,5 +1,4 @@
 using Domain.Entitys;
-using Domain.ValueObjects;
 using DomainTests.Factoryes;
 
 namespace DomainTests

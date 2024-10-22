@@ -16,7 +16,7 @@ namespace DomainTests.Factoryes
         {
             _changes = new List<BillChanges>();
 
-            var billAmount = BillChanges.Create(actionDate, amount);
+            var billAmount = BillChanges.Create(Guid.NewGuid(), actionDate, amount);
 
             if (billAmount.IsFailure)
             {
