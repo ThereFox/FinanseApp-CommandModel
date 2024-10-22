@@ -1,10 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
+using Domain.Operation;
 
 namespace Domain.Entitys
 {
     public sealed class Bill : Entity<Guid>
     {
         private readonly List<BillChanges> _changes;
+
+        public Transaction? ExecutionContext {  get; }
 
         public Client BillOwner { get; private set; }
 
