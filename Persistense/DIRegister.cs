@@ -1,6 +1,7 @@
 ﻿using App.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Persistense.Stub;
+using Persistense.Stores;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +12,16 @@ namespace Persistense
 {
     public static class DIRegister
     {
-        public static IServiceCollection AddPersistense(this IServiceCollection services)
+        public static IServiceCollection AddPersistense(
+            this IServiceCollection services,
+            string connectionString
+            )
         {
-            services.AddScoped<IBillStore, BillStoreStub>();
+            services.AddDbContext<ApplicationDBContext>(
+                options => options.UseNpgsql(connectionString)
+            );
+            services.AddScoped<IBillStore, BillStore>();
+            services.AddScoped<IClientStore, ClientStore>();
 
             return services;
         }
