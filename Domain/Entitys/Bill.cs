@@ -7,25 +7,14 @@ namespace Domain.Entitys
     {
         private readonly List<BillChanges> _changes;
 
+        public IReadOnlyList<BillChanges> Changes => _changes;
         public Client BillOwner { get; private set; }
+
+        public decimal CurrentAmount => GetAmountAtDate(DateTime.UtcNow);
 
         public Result Debet(decimal amount) //increment
         {
-            var changeValidate = BillChanges.Create(Guid.NewGuid(), this, DateTime.Now, amount);
-
-            if (changeValidate.IsFailure)
-            {
-                return changeValidate;
-            }
-
-            _changes.Add(changeValidate.Value);
-
-            return Result.Success();
-        }
-
-        public Result Debet(decimal amount, Transaction executionContext) //increment
-        {
-            var changeValidate = BillChanges.Create(Guid.NewGuid(), this, DateTime.Now, amount, executionContext);
+            var changeValidate = BillChanges.Create(Guid.NewGuid(), ValueObjects.BillChangeType.Simple , DateTime.UtcNow, amount);
 
             if (changeValidate.IsFailure)
             {
@@ -39,12 +28,12 @@ namespace Domain.Entitys
 
         public Result Credit(decimal amount) //decrement
         {
-            if (GetAmountAtDate(DateTime.Now.AddMinutes(10)) - amount < 0)
+            if (GetAmountAtDate(DateTime.UtcNow.AddMinutes(10)) - amount < 0)
             {
                 return Result.Failure("can not credit not positive bill");
             }
 
-            var changeValidate = BillChanges.Create(Guid.NewGuid(), this, DateTime.Now, -amount);
+            var changeValidate = BillChanges.Create(Guid.NewGuid(), ValueObjects.BillChangeType.Simple, DateTime.UtcNow, -amount);
 
             if (changeValidate.IsFailure)
             {
@@ -55,25 +44,6 @@ namespace Domain.Entitys
 
             return Result.Success();
         }
-        public Result Credit(decimal amount, Transaction executionContext) //decrement
-        {
-            if (GetAmountAtDate(DateTime.Now.AddMinutes(10)) - amount < 0)
-            {
-                return Result.Failure("can not credit not positive bill");
-            }
-
-            var changeValidate = BillChanges.Create(Guid.NewGuid(), this, DateTime.Now, -amount, executionContext);
-
-            if (changeValidate.IsFailure)
-            {
-                return changeValidate;
-            }
-
-            _changes.Add(changeValidate.Value);
-
-            return Result.Success();
-        }
-
         public decimal GetAmountAtDate(DateTime date)
         {
             return _changes
