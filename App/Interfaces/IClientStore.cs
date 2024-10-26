@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace App.Interfaces
 {
-    public interface IBillStore
+    public interface IClientStore
     {
-        public Task<Result<Bill>> GetById(Guid id);
-        public Task<Result> CreateNew(Bill entity);
-        public Task<Result> SaveChanges(Bill bill);
+        public Task<Result<Client>> GetById(Guid id);
+        public Task<Result> SaveNew(Client client);
     }
 }

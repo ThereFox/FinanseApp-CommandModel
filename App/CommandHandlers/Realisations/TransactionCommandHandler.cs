@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.CommandHandlers
+namespace App.CommandHandlers.Realisations
 {
-    public class CreditBillCommandHandler : ICommandHandler<CreditBillCommand>
+    public class TransactionCommandHandler : ICommandHandler<TransactionCommand>
     {
-        public Task<Result> HandlAsync(CreditBillCommand command)
+        public Task<Result> HandlAsync(TransactionCommand command)
         {
             throw new NotImplementedException();
         }
