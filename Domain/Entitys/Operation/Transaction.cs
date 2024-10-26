@@ -38,14 +38,14 @@ namespace Domain.Operation
                 return Result.Failure("dont have amount in init bill");
             }
 
-            var creditResult = From.Credit(Amount, this);
+            var creditResult = From.Credit(Amount);
 
             if (creditResult.IsFailure)
             {
                 return creditResult;
             }
 
-            var debetResult = To.Debet(Amount, this);
+            var debetResult = To.Debet(Amount);
 
             if (debetResult.IsFailure)
             {
