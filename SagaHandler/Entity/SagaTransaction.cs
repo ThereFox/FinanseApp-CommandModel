@@ -14,15 +14,16 @@ namespace SagaHandler.Entity
     {
         private readonly List<ISagaAction> _actions;
 
+        public bool IsExecuted { get; private set; }
         public bool IsCompensated { get; private set; }
 
-        public Result Do()
+        public async Task<Result> DoAsync()
         {
-            var doResult = _actions.DoAllBeforeError();
+            var doResult = await _actions.DoAllAsyncBeforeError();
 
             if (doResult.IsFailure)
             {
-                Compensate();
+                await CompensateAsync();
                 return doResult;
             }
 
@@ -30,9 +31,9 @@ namespace SagaHandler.Entity
 
         }
 
-        public Result Compensate()
+        public async Task<Result> CompensateAsync()
         {
-            var compensateResult = _actions.CompensateAllBeforeError();
+            var compensateResult = await _actions.CompensateAllAsyncBeforeError();
 
             if (compensateResult.IsFailure)
             {

@@ -10,11 +10,11 @@ namespace Infrastructure.SagaHandler.Extensions
 {
     public static class ExecuteBeforeErrorExtension
     {
-        public static Result DoAllBeforeError(this List<ISagaAction> actions)
+        public static async Task<Result> DoAllAsyncBeforeError(this List<ISagaAction> actions)
         {
             for (var i = 0; i < actions.Count; i++)
             {
-                var executeResult = actions[i].Do();
+                var executeResult = await actions[i].DoAsync();
 
                 if (executeResult.IsFailure)
                 {
@@ -25,11 +25,11 @@ namespace Infrastructure.SagaHandler.Extensions
             return Result.Success();
         }
 
-        public static Result CompensateAllBeforeError(this List<ISagaAction> actions)
+        public static async Task<Result> CompensateAllAsyncBeforeError(this List<ISagaAction> actions)
         {
             for (var i = 0; i < actions.Count; i++)
             {
-                var executeResult = actions[i].Compensate();
+                var executeResult = await actions[i].CompensateAsync();
 
                 if (executeResult.IsFailure)
                 {

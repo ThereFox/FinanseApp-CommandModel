@@ -1,5 +1,6 @@
 ﻿using App.CommandHandlers;
 using App.Commands;
+using CSharpFunctionalExtensions;
 using Infrastructure.SagaHandler.UseCases.UseCases;
 using SagaHandler.Entity;
 using System;
@@ -14,9 +15,9 @@ namespace Infrastructure.SagaHandler.UseCases
     {
         private readonly ICommandHandler<CreditBillCommand> _commandHandler;
 
-        public void Handl(SagaTransactionCommand<CreditBillCommand> command)
+        public Task<Result> HandlAsync(SagaTransactionCommand<CreditBillCommand> command)
         {
-            _commandHandler.Handl(command.SubCommand);
+            throw new NotImplementedException();
         }
     }
 }

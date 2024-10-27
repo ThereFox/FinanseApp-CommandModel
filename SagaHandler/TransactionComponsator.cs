@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SagaHandler
 {
-    public class TransactionComponsator : 
+    public class TransactionComponsator
     {
         private readonly ISageTransactionStore _store;
 
