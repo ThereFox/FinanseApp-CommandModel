@@ -11,6 +11,6 @@ namespace App.Interfaces
     public interface IClientStore
     {
         public Task<Result<Client>> GetById(Guid id);
-        public Task<Result> SaveNew(Client client);
+        public Task<Result<Guid>> SaveNew(Client client);
     }
 }
