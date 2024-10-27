@@ -21,11 +21,11 @@ namespace Persistense.Stores
             _dbContext = context;
         }
 
-        public async Task<Result> CreateNew(Bill entity)
+        public async Task<Result<Guid>> CreateNew(Bill entity)
         {
             if(await _dbContext.Database.CanConnectAsync() == false)
             {
-                return Result.Failure("database unawaliable");
+                return Result.Failure<Guid>("database unawaliable");
             }
 
 
@@ -34,7 +34,7 @@ namespace Persistense.Stores
             _dbContext.Bills.Add(savable);
             await _dbContext.SaveChangesAsync();
 
-            return Result.Success();
+            return Result.Success(savable.Id);
         }
 
         public async Task<Result<Bill>> GetById(Guid id)

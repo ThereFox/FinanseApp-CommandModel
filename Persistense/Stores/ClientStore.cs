@@ -40,11 +40,11 @@ namespace Persistense.Stores
             return client.ToDomain();
         }
 
-        public async Task<Result> SaveNew(Client client)
+        public async Task<Result<Guid>> SaveNew(Client client)
         {
             if (await _dbContext.Database.CanConnectAsync() == false)
             {
-                return Result.Failure("database unawaliable");
+                return Result.Failure<Guid>("database unawaliable");
             }
 
             var clientDTO = client.ToDTO();
@@ -52,7 +52,7 @@ namespace Persistense.Stores
             await _dbContext.Clients.AddAsync(clientDTO);
             await _dbContext.SaveChangesAsync();
 
-            return Result.Success();
+            return Result.Success(clientDTO.Id);
         }
     }
 }
