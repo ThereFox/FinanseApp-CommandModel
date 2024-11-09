@@ -16,4 +16,8 @@
     <ProjectReference Include="..\App\App.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\CompensateTransactions\" />
+  </ItemGroup>
+
 </Project>

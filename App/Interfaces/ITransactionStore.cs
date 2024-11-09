@@ -11,5 +11,6 @@ namespace App.Interfaces
     public interface ITransactionStore
     {
         public Task<Result<Transaction>> GetTransactionById(Guid id);
+        public Task<Result> SaveNew(Transaction transaction);
     }
 }
