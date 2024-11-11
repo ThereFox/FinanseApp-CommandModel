@@ -4,6 +4,13 @@ namespace Application.Events.Realisation;
 
 public class BillCreatedEvent : IDBStateChangeEvent
 {
-    public Guid BillId { get; set; }
-    public Guid OwnerId { get; set; }
+    public Guid BillId { get; private set; }
+    public Guid OwnerId { get; private set; }
+
+    public BillCreatedEvent(Guid billId, Guid ownerId)
+    {
+        BillId = billId;
+        OwnerId = ownerId;
+    }
+    
 }

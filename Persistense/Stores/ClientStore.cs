@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Events.Realisation;
+using Infrastructure.EvensSourcerer.EventProduce.Abstractions;
 
 namespace Persistense.Stores
 {
@@ -15,9 +17,12 @@ namespace Persistense.Stores
     {
         private readonly ApplicationDBContext _dbContext;
 
-        public ClientStore(ApplicationDBContext context)
+        private readonly IEventProducer<ClientCreatedEvent> _eventProducer;
+        
+        public ClientStore(ApplicationDBContext context, IEventProducer<ClientCreatedEvent> eventProducer)
         {
             _dbContext = context;
+            _eventProducer = eventProducer;
         }
 
         public async Task<Result<Client>> GetById(Guid id)
@@ -47,11 +52,29 @@ namespace Persistense.Stores
                 return Result.Failure<Guid>("database unawaliable");
             }
 
+            var transaction = await _dbContext.Database.BeginTransactionAsync();
+            
             var clientDTO = client.ToDTO();
 
             await _dbContext.Clients.AddAsync(clientDTO);
             await _dbContext.SaveChangesAsync();
 
+            var eventData = new ClientCreatedEvent()
+            {
+                ClientId = client.Id,
+                ClientName = client.Name
+            };
+            
+            var notifyUpdate = await _eventProducer.ProduceAsync(eventData);
+
+            if (notifyUpdate.IsFailure)
+            {
+                await transaction.RollbackAsync();
+                return Result.Failure<Guid>("cant notify stend");
+            }
+
+            await transaction.CommitAsync();
+            
             return Result.Success(clientDTO.Id);
         }
     }

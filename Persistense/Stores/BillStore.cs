@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Events.Realisation;
+using Infrastructure.EvensSourcerer.EventProduce.Abstractions;
 
 namespace Persistense.Stores
 {
@@ -16,6 +18,9 @@ namespace Persistense.Stores
     {
         private readonly ApplicationDBContext _dbContext;
 
+        private readonly IEventProducer<BillAmountChangeEvent> _amountChangeEventProducer;
+        private readonly IEventProducer<BillCreatedEvent> _billCreatedEventProducer;
+        
         public BillStore(ApplicationDBContext context)
         {
             _dbContext = context;
@@ -28,12 +33,25 @@ namespace Persistense.Stores
                 return Result.Failure<Guid>("database unawaliable");
             }
 
+            var transaction = await _dbContext.Database.BeginTransactionAsync();
 
             var savable = entity.ToDTO();
             
             _dbContext.Bills.Add(savable);
             await _dbContext.SaveChangesAsync();
 
+            var eventData = new BillCreatedEvent(entity.Id, entity.BillOwner.Id);
+            
+            var notifyResult = await _billCreatedEventProducer.ProduceAsync(eventData);
+            
+            if (notifyResult.IsFailure)
+            {
+                await transaction.RollbackAsync();
+                return notifyResult.ConvertFailure<Guid>();
+            }
+            
+            await transaction.CommitAsync();
+            
             return Result.Success(savable.Id);
         }
 
@@ -138,7 +156,16 @@ namespace Persistense.Stores
 
                 await _dbContext.SaveChangesAsync();
 
+                var eventData = new BillAmountChangeEvent(bill.Id, bill.GetAmountAtDate(DateTime.Now));
+                
+                var notifyResult = await _amountChangeEventProducer.ProduceAsync(eventData);
 
+                if (notifyResult.IsFailure)
+                {
+                    await transaction.RollbackAsync();
+                    return notifyResult;
+                }
+                
                 await transaction.CommitAsync();
             }
 
