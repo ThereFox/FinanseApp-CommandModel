@@ -21,40 +21,14 @@ namespace Persistense.Stores
         private readonly IEventProducer<BillAmountChangeEvent> _amountChangeEventProducer;
         private readonly IEventProducer<BillCreatedEvent> _billCreatedEventProducer;
         
-        public BillStore(ApplicationDBContext context)
+        public BillStore(ApplicationDBContext context, IEventProducer<BillAmountChangeEvent> amountChangeEventProducer, IEventProducer<BillCreatedEvent> billCreatedEventProducer)
         {
             _dbContext = context;
+            _amountChangeEventProducer = amountChangeEventProducer;
+            _billCreatedEventProducer = billCreatedEventProducer;
         }
 
-        public async Task<Result<Guid>> CreateNew(Bill entity)
-        {
-            if(await _dbContext.Database.CanConnectAsync() == false)
-            {
-                return Result.Failure<Guid>("database unawaliable");
-            }
-
-            var transaction = await _dbContext.Database.BeginTransactionAsync();
-
-            var savable = entity.ToDTO();
-            
-            _dbContext.Bills.Add(savable);
-            await _dbContext.SaveChangesAsync();
-
-            var eventData = new BillCreatedEvent(entity.Id, entity.BillOwner.Id);
-            
-            var notifyResult = await _billCreatedEventProducer.ProduceAsync(eventData);
-            
-            if (notifyResult.IsFailure)
-            {
-                await transaction.RollbackAsync();
-                return notifyResult.ConvertFailure<Guid>();
-            }
-            
-            await transaction.CommitAsync();
-            
-            return Result.Success(savable.Id);
-        }
-
+        
         public async Task<Result<Bill>> GetById(Guid id)
         {
             if(await _dbContext.Database.CanConnectAsync() == false)
@@ -125,11 +99,41 @@ namespace Persistense.Stores
 
         }
 
+        
+        public async Task<Result<Guid>> CreateNew(Bill entity)
+        {
+            if(await _dbContext.Database.CanConnectAsync() == false)
+            {
+                return Result.Failure<Guid>("database unawaliable");
+            }
+
+            var transaction = await _dbContext.Database.BeginTransactionAsync();
+
+            var savable = entity.ToDTO();
+            
+            _dbContext.Bills.Add(savable);
+            await _dbContext.SaveChangesAsync();
+
+            var eventData = new BillCreatedEvent(savable.Id, savable.OwnerId);
+            
+            var notifyResult = await _billCreatedEventProducer.ProduceAsync(eventData);
+            
+            if (notifyResult.IsFailure)
+            {
+                await transaction.RollbackAsync();
+                return notifyResult.ConvertFailure<Guid>();
+            }
+            
+            await transaction.CommitAsync();
+            
+            return Result.Success(savable.Id);
+        }
+
         public async Task<Result> SaveChanges(Bill bill)
         {
             if (await _dbContext.Database.CanConnectAsync() == false)
             {
-                return Result.Failure("database unawaliable");
+                return Result.Failure("database unreliable");
             }
 
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())

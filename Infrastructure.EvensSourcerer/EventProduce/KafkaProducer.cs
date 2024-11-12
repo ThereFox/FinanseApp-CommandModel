@@ -14,7 +14,7 @@ public sealed class KafkaProducer
     }
 
 
-    public async Task<Result> SendDataToTopic(string data, string TopicName)
+    public async Task<Result> SendDataToTopic(string data, string topicName)
     {
         try
         {
@@ -23,7 +23,7 @@ public sealed class KafkaProducer
                 Value = data,
             };
 
-            var deliveryResult = await _messageProduser.ProduceAsync(TopicName, message);
+            var deliveryResult = await _messageProduser.ProduceAsync(topicName, message);
 
             if (deliveryResult.Status != PersistenceStatus.Persisted)
             {
