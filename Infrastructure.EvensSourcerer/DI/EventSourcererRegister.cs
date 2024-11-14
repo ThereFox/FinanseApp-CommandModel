@@ -12,7 +12,11 @@ public static class EventSourcererRegister
 {
     public static IServiceCollection AddEventSourcerer(this IServiceCollection services)
     {
-        var config = new ProducerConfig();
+        var config = new ProducerConfig()
+        {
+            BootstrapServers = "localhost:9092",
+            AllowAutoCreateTopics = true
+        };
         
         var producer = new ProducerBuilder<Null, string>(config)
             .Build();
@@ -33,7 +37,8 @@ public static class EventSourcererRegister
             ex =>
             {
                 var producer = ex.GetRequiredService<KafkaProducer>();
-                return new EventProduce.KafkaEventProducer<TEvent>(topicName, producer);
+                var messageConverter = ex.GetRequiredService<IMessageConverter<string>>();
+                return new EventProduce.KafkaEventProducer<TEvent>(topicName, producer, messageConverter);
             }
         );
 

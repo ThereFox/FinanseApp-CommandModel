@@ -13,10 +13,11 @@ public class KafkaEventProducer<T> : IEventProducer<T>
     
     private readonly string _topicName;
     
-    public KafkaEventProducer(string topicName, KafkaProducer producer)
+    public KafkaEventProducer(string topicName, KafkaProducer producer, IMessageConverter<string> messageConverter)
     {
         _producer = producer;
         _topicName = topicName;
+        _messageConverter = messageConverter;
     }
     
     public async Task<Result> ProduceAsync(T data)

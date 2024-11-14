@@ -29,7 +29,7 @@ public sealed class KafkaProducer
             {
                 return Result.Failure("error");
             }
-
+            
             return Result.Success();
         }
         catch (Exception ex)
