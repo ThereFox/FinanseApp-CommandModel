@@ -1,6 +1,7 @@
 using App;
 using Application.Events.Realisation;
 using Infrastructure.EvensSourcerer.DI;
+using Infrastructure.TransactionalOutbox;
 using Persistense;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,10 +17,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services
-    .AddEventSourcerer()
-    .AddEventProducer<ClientCreatedEvent>("ClientCreated")
-    .AddEventProducer<BillCreatedEvent>("BillCreated")
-    .AddEventProducer<BillAmountChangeEvent>("BillAmountChange");
+    .AddEventProducer()
+    .AddOutbox()
+    .AddEventSender<ClientCreatedEvent>("ClientCreated")
+    .AddEventSender<BillCreatedEvent>("BillCreated")
+    .AddEventSender<BillAmountChangeEvent>("BillAmountChange");
 
 builder.Services
     .AddAppService()

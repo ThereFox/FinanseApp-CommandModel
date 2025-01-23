@@ -10,7 +10,7 @@ namespace Infrastructure.EvensSourcerer.DI;
 
 public static class EventSourcererRegister
 {
-    public static IServiceCollection AddEventSourcerer(this IServiceCollection services)
+    public static IServiceCollection AddEventProducer(this IServiceCollection services)
     {
         var config = new ProducerConfig()
         {
@@ -28,7 +28,7 @@ public static class EventSourcererRegister
         return services;
     }
 
-    public static IServiceCollection AddEventProducer<TEvent>(
+    public static IServiceCollection AddNotApplicableEventProducer<TEvent>(
         this IServiceCollection services,
         string topicName) 
         where TEvent : IDBStateChangeEvent
