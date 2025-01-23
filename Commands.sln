@@ -17,7 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.SagaHandler"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistense", "Persistense\Persistense.csproj", "{A6B146A7-09FE-4FFB-A97A-DBA3EF7103F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.EvensSourcerer", "Infrastructure.EvensSourcerer\Infrastructure.EvensSourcerer.csproj", "{CF96E6D3-058A-4C8C-85BD-EE90426DFC03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.EventProducer.Kafka", "Infrastructure.EventProducer.Kafka\Infrastructure.EventProducer.Kafka.csproj", "{CF96E6D3-058A-4C8C-85BD-EE90426DFC03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.TransactionalOutbox.Dapper", "Infrastructure.TransactionalOutbox.Dapper\Infrastructure.TransactionalOutbox.Dapper.csproj", "{BD52D9A1-298E-4EE3-8A64-6779F2106AC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.TransactionalOutbox.PollingPublisher.Kafka", "Infrastructure.TransactionalOutbox.PollingPublisher.Kafka\Infrastructure.TransactionalOutbox.PollingPublisher.Kafka.csproj", "{8BBD38A1-3FFD-4E8D-9F60-5907C3EA5D9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +57,14 @@ Global
 		{CF96E6D3-058A-4C8C-85BD-EE90426DFC03}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF96E6D3-058A-4C8C-85BD-EE90426DFC03}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF96E6D3-058A-4C8C-85BD-EE90426DFC03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD52D9A1-298E-4EE3-8A64-6779F2106AC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD52D9A1-298E-4EE3-8A64-6779F2106AC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD52D9A1-298E-4EE3-8A64-6779F2106AC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD52D9A1-298E-4EE3-8A64-6779F2106AC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BBD38A1-3FFD-4E8D-9F60-5907C3EA5D9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BBD38A1-3FFD-4E8D-9F60-5907C3EA5D9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BBD38A1-3FFD-4E8D-9F60-5907C3EA5D9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BBD38A1-3FFD-4E8D-9F60-5907C3EA5D9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
