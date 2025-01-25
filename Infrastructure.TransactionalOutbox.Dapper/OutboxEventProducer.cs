@@ -14,14 +14,14 @@ public class OutboxEventProducer<TEvent> : IEventProducer<TEvent>
 {
     private readonly OutboxStore _store;
     private readonly string _topicName;
-    private readonly IDbTransaction _currentTransaction;
+    private readonly TransactionGetter _currentTransactionGetter;
     
     
-    public OutboxEventProducer(OutboxStore store, string topicName, IDbTransaction currentTransaction)
+    public OutboxEventProducer(OutboxStore store, string topicName, TransactionGetter currentTransactionGetter)
     {
         _store = store;
         _topicName = topicName;
-        _currentTransaction = currentTransaction;
+        _currentTransactionGetter = currentTransactionGetter;
     }
     
     public async Task<Result> ProduceAsync(TEvent data)
@@ -32,7 +32,14 @@ public class OutboxEventProducer<TEvent> : IEventProducer<TEvent>
             CreateTime = DateTime.UtcNow
         };
 
-        var saveResult = await _store.SaveEventAsync(eventData, _topicName, _currentTransaction);
+        var currentTransaction = _currentTransactionGetter.Transaction;
+
+        if (currentTransaction == null)
+        {
+            return Result.Failure("event produced without transaction");
+        }
+        
+        var saveResult = await _store.SaveEventAsync(eventData, _topicName, currentTransaction);
 
         return saveResult;
     }

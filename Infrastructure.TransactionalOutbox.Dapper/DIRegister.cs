@@ -17,7 +17,8 @@ public static class DIRegister
             ex =>
             {
                 var context = ex.GetRequiredService<ApplicationDBContext>();
-                return new OutboxStore(context.Database.GetDbConnection());
+                var connection = context.Database.GetDbConnection();
+                return new OutboxStore(connection);
             }
             );
         
@@ -47,8 +48,9 @@ public static class DIRegister
             ex =>
             {
                 var store = ex.GetRequiredService<OutboxStore>();
-                var currentTransaction = ex.GetRequiredService<ApplicationDBContext>().Database.CurrentTransaction?.GetDbTransaction();
-                return new OutboxEventProducer<TEvent>(store, topic, currentTransaction);
+                var context = ex.GetRequiredService<ApplicationDBContext>();
+                var transactionGetter = new TransactionGetter(context);
+                return new OutboxEventProducer<TEvent>(store, topic, transactionGetter);
             }
         );
         

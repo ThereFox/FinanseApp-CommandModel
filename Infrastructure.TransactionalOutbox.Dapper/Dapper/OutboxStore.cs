@@ -8,7 +8,7 @@ namespace Infrastructure.TransactionalOutbox.Dapper;
 public class OutboxStore
 {
     private readonly IDbConnection _connection;
-
+    
     public OutboxStore(IDbConnection connection)
     {
         _connection = connection;
