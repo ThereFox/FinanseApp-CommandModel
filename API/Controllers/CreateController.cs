@@ -22,7 +22,7 @@ namespace API.Controllers
         }
 
         [HttpPost("bill")]
-        public async Task<IActionResult> CreateBill(CreateBillRequest request)
+        public async Task<IActionResult> CreateBill([FromBody] CreateBillRequest request)
         {
             var command = new CreateBillCommand()
             {
@@ -34,8 +34,13 @@ namespace API.Controllers
         }
 
         [HttpPost("client")]
-        public async Task<IActionResult> CreateClient(CreateClientRequest request)
+        public async Task<IActionResult> CreateClient([FromBody] CreateClientRequest request)
         {
+            if (request.Name == null)
+            {
+                return new UnprocessableEntityResult();
+            }
+            
             var command = new CreateClientCommand()
             {
                 Name = request.Name

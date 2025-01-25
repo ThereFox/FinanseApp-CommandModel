@@ -18,7 +18,7 @@ public class PollingPublisherService : IHostedService
     
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        loop(_cancellationTokenSource.Token);
+        Task.Run(() => loop(_cancellationTokenSource.Token));
         return Task.CompletedTask;
     }
 

@@ -29,7 +29,12 @@ public class OutboxStore
                 )
             ";
             
-            var createResult = await _connection.ExecuteAsync(sql, changeEvent, transaction);
+            var createResult = await _connection.ExecuteAsync(sql, new
+            {
+                Message = changeEvent.Message,
+                CreateTime = changeEvent.CreateTime,
+                TargetTopic = targetTopic
+            }, transaction);
 
             if (createResult != 1)
             {
@@ -50,11 +55,11 @@ public class OutboxStore
         {
             var sql = @"
                 SELECT * FROM OutboxTable
-                Where PublishTime = NULL
+                Where publishtime is NULL
                 LIMIT @limit
             ";
             
-            var events = await _connection.QueryAsync<ChangeEventDTO>(sql, limit);
+            var events = await _connection.QueryAsync<ChangeEventDTO>(sql, new { limit = limit});
             
             return events.ToList();
         }

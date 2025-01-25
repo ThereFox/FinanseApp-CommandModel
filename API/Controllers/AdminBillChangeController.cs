@@ -22,7 +22,7 @@ namespace API.Controllers
         }
 
         [HttpPost("debet")]
-        public async Task<IActionResult> AdminDebit(DebetRequest request)
+        public async Task<IActionResult> AdminDebit([FromBody] DebetRequest request)
         {
             var command = new DebetBillCommand(request.BillId, request.Amount);
             var executeResult = await _debetHandler.HandlAsync(command);
@@ -31,7 +31,7 @@ namespace API.Controllers
         }
 
         [HttpPost("credit")]
-        public async Task<IActionResult> AdminCredit(CreditRequest request)
+        public async Task<IActionResult> AdminCredit([FromBody] CreditRequest request)
         {
             var command = new CreditBillCommand(request.BillId, request.Amount);
             var executeResult = await _creditHandler.HandlAsync(command);

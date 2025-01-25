@@ -24,6 +24,22 @@ public static class DIRegister
         return services;
     }
 
+    public static IServiceProvider AddOutboxTableInitialiser(this IServiceProvider services)
+    {
+        var connection = services.GetRequiredService<ApplicationDBContext>().Database.GetDbConnection();
+        var initialiser = new SchemeInitialiser(connection);
+
+        var initialiseTask = initialiser.Initialise();
+
+        initialiseTask.Wait();
+
+        if (initialiseTask.Result.IsFailure)
+        {
+            throw new InvalidCastException();
+        }
+        return services;
+    }
+    
     public static IServiceCollection AddEventSender<TEvent>(this IServiceCollection services, string topic)
         where TEvent: IDBStateChangeEvent
     {
