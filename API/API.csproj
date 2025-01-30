@@ -17,7 +17,6 @@
     <ProjectReference Include="..\Infrastructure.TransactionalOutbox.Dapper\Infrastructure.TransactionalOutbox.Dapper.csproj" />
     <ProjectReference Include="..\Infrastructure.TransactionalOutbox.PollingPublisher.Kafka\Infrastructure.TransactionalOutbox.PollingPublisher.Kafka.csproj" />
     <ProjectReference Include="..\Persistense\Persistense.csproj" />
-    <ProjectReference Include="..\SagaHandler\Infrastructure.SagaHandler.csproj" />
   </ItemGroup>
 
   <ItemGroup>

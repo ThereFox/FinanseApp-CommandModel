@@ -1,5 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
+using Domain.Events.Realisation;
+using Domain.Interface;
 using Domain.Operation;
+using Domain.Results;
 
 namespace Domain.Entitys
 {
@@ -12,37 +15,39 @@ namespace Domain.Entitys
 
         public decimal CurrentAmount => GetAmountAtDate(DateTime.UtcNow);
 
-        public Result Debet(decimal amount) //increment
+        public ResultWithEvent Debet(decimal amount) //increment
         {
             var changeValidate = BillChanges.Create(Guid.NewGuid(), ValueObjects.BillChangeType.Simple , DateTime.UtcNow, amount);
 
             if (changeValidate.IsFailure)
             {
-                return changeValidate;
+                return changeValidate.AsCommonFailureWithoutEvent();
             }
 
             _changes.Add(changeValidate.Value);
 
-            return Result.Success();
+            return changeValidate.AsCommonWithEvent([new BillAmountChanged(this.Id, GetAmountAtDate(DateTime.UtcNow), DateTime.UtcNow)]);
         }
 
-        public Result Credit(decimal amount) //decrement
+        public ResultWithEvent Credit(decimal amount) //decrement
         {
             if (GetAmountAtDate(DateTime.UtcNow.AddMinutes(10)) - amount < 0)
             {
-                return Result.Failure("can not credit not positive bill");
+                return Result.Failure("can not credit not positive bill").AsFailureWithoutEvent();
             }
 
             var changeValidate = BillChanges.Create(Guid.NewGuid(), ValueObjects.BillChangeType.Simple, DateTime.UtcNow, -amount);
 
             if (changeValidate.IsFailure)
             {
-                return changeValidate;
+                return changeValidate.AsCommonFailureWithoutEvent();
             }
 
             _changes.Add(changeValidate.Value);
+            
+            
 
-            return Result.Success();
+            return changeValidate.AsCommonWithEvent(new List<DomainEvent> {new BillAmountChanged(this.Id, this.GetAmountAtDate(DateTime.UtcNow), DateTime.UtcNow) });
         }
         public decimal GetAmountAtDate(DateTime date)
         {
@@ -59,19 +64,19 @@ namespace Domain.Entitys
             _changes = changes.ToList();
         }
 
-        public static Result<Bill> Create(Guid id, Client owner, IList<BillChanges> changes)
+        public static ResultWithEvent<Bill> Create(Guid id, Client owner, IList<BillChanges> changes)
         {
             if(changes == default)
             {
-                return Result.Failure<Bill>("empty changes list");
+                return Result.Failure<Bill>("empty changes list").AsFailureWithoutEvent();
             }
 
             if(owner == null)
             {
-                return Result.Failure<Bill>("empty owner");
+                return Result.Failure<Bill>("empty owner").AsFailureWithoutEvent();
             }
 
-            return Result.Success(new Bill(id, owner, changes));
+            return Result.Success(new Bill(id, owner, changes)).WithEvent([new BillCreatedEvent(id, owner.Id, DateTime.UtcNow)]);
         }
 
     }

@@ -13,8 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0AD36208
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DomainTests", "DomainTests\DomainTests.csproj", "{4B11B1DC-B763-45DC-8F20-C31C068EAD0D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.SagaHandler", "SagaHandler\Infrastructure.SagaHandler.csproj", "{33647D61-14E5-4733-9224-D0B226A32997}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistense", "Persistense\Persistense.csproj", "{A6B146A7-09FE-4FFB-A97A-DBA3EF7103F4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.EventProducer.Kafka", "Infrastructure.EventProducer.Kafka\Infrastructure.EventProducer.Kafka.csproj", "{CF96E6D3-058A-4C8C-85BD-EE90426DFC03}"
@@ -22,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.TransactionalOutbox.Dapper", "Infrastructure.TransactionalOutbox.Dapper\Infrastructure.TransactionalOutbox.Dapper.csproj", "{BD52D9A1-298E-4EE3-8A64-6779F2106AC4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.TransactionalOutbox.PollingPublisher.Kafka", "Infrastructure.TransactionalOutbox.PollingPublisher.Kafka\Infrastructure.TransactionalOutbox.PollingPublisher.Kafka.csproj", "{8BBD38A1-3FFD-4E8D-9F60-5907C3EA5D9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutboxAndPollingPublisher", "OutboxAndPollingPublisher\OutboxAndPollingPublisher.csproj", "{4D20B5DD-4D7A-48BD-B899-047F8509097E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,10 +45,6 @@ Global
 		{4B11B1DC-B763-45DC-8F20-C31C068EAD0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B11B1DC-B763-45DC-8F20-C31C068EAD0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B11B1DC-B763-45DC-8F20-C31C068EAD0D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{33647D61-14E5-4733-9224-D0B226A32997}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{33647D61-14E5-4733-9224-D0B226A32997}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{33647D61-14E5-4733-9224-D0B226A32997}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{33647D61-14E5-4733-9224-D0B226A32997}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A6B146A7-09FE-4FFB-A97A-DBA3EF7103F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6B146A7-09FE-4FFB-A97A-DBA3EF7103F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6B146A7-09FE-4FFB-A97A-DBA3EF7103F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -65,12 +61,17 @@ Global
 		{8BBD38A1-3FFD-4E8D-9F60-5907C3EA5D9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BBD38A1-3FFD-4E8D-9F60-5907C3EA5D9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BBD38A1-3FFD-4E8D-9F60-5907C3EA5D9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D20B5DD-4D7A-48BD-B899-047F8509097E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D20B5DD-4D7A-48BD-B899-047F8509097E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D20B5DD-4D7A-48BD-B899-047F8509097E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D20B5DD-4D7A-48BD-B899-047F8509097E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4B11B1DC-B763-45DC-8F20-C31C068EAD0D} = {0AD36208-A086-44EB-A785-170EB04A0F09}
+		{4D20B5DD-4D7A-48BD-B899-047F8509097E} = {0AD36208-A086-44EB-A785-170EB04A0F09}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {50A5F04A-D71A-4F35-8BC5-464F003E6460}
